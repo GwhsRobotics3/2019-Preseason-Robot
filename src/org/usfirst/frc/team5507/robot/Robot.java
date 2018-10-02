@@ -29,16 +29,10 @@ public class Robot extends TimedRobot {
 	public static final ExampleSubsystem kExampleSubsystem
 			= new ExampleSubsystem();
 	public static OI m_oi;
-	public Spark left1 = new Spark(0); // TEMPORARY PWM PORT NUMBERS FIX LATER.
-	public Spark left2 = new Spark(1);
-	public Spark left3 = new Spark(2);
-	public Spark right1 = new Spark(3);
-	public Spark right2 = new Spark(4); //aoudfhsiudf
-	public Spark right3 = new Spark(5);
+	public Spark left = new Spark(0); // TEMPORARY PWM PORT NUMBERS FIX LATER.
+	public Spark right = new Spark(1); 
 	
-	SpeedControllerGroup m_left = new SpeedControllerGroup(left1, left2, left3);
-	SpeedControllerGroup m_right = new SpeedControllerGroup(right1, right2, right3);
-	DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
+	DifferentialDrive m_drive = new DifferentialDrive(left, right);
 
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -124,8 +118,16 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		
-		m_drive.arcadeDrive( OI.main.getRawAxis(0), OI.main.getRawAxis(1));
-		
+		if(OI.main.getRawAxis(2) > .1) { //turn left
+			m_drive.tankDrive(-OI.main.getRawAxis(2), OI.main.getRawAxis(2));
+		}
+		else if(OI.main.getRawAxis(3) > .1) { //turn right
+			m_drive.tankDrive(OI.main.getRawAxis(3), -OI.main.getRawAxis(3));
+		}
+		else {
+			m_drive.tankDrive(-OI.main.getRawAxis(1), OI.main.getRawAxis(1));
+		}
+		//m_drive.arcadeDrive(-OI.main.getRawAxis(2), -OI.main.getRawAxis(3));
 	}
 
 	/**
