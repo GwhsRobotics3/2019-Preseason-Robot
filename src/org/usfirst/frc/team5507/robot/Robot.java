@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
 	public Spark left2 = new Spark(1);
 	public Spark left3 = new Spark(2);
 	public Spark right1 = new Spark(3);
-	public Spark right2 = new Spark(4);
+	public Spark right2 = new Spark(4); //aoudfhsiudf
 	public Spark right3 = new Spark(5);
 	
 	SpeedControllerGroup m_left = new SpeedControllerGroup(left1, left2, left3);
