@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
 			m_drive.tankDrive(OI.main.getRawAxis(3), -OI.main.getRawAxis(3));
 		}
 		else {
-			m_drive.tankDrive(-OI.main.getRawAxis(1), OI.main.getRawAxis(1));
+			m_drive.tankDrive(-OI.main.getRawAxis(1), -OI.main.getRawAxis(1));
 		}
 		//m_drive.arcadeDrive(-OI.main.getRawAxis(2), -OI.main.getRawAxis(3));
 	}
