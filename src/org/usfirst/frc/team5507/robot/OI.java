@@ -8,6 +8,8 @@
 package org.usfirst.frc.team5507.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -42,5 +44,10 @@ public class OI {
 	// until it is finished as determined by it's isFinished method.
 	// button.whenReleased(new ExampleCommand());
 	public static XboxController main = new XboxController(0);
+	static Button a = new JoystickButton(main, 1);
+	static Button b = new JoystickButton(main, 2);
+	static Button leftBumper = new JoystickButton(main, 5);
+	static Button rightBumper = new JoystickButton(main, 6);
+
 	
 }
