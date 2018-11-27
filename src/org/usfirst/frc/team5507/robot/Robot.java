@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj.vision.VisionThread;
 
 import org.usfirst.frc.team5507.robot.commands.ExampleCommand;
 import org.usfirst.frc.team5507.robot.subsystems.ExampleSubsystem;
+import org.usfirst.frc.team5507.robot.subsystems.SwerveDrive;
+import org.usfirst.frc.team5507.robot.subsystems.WheelDrive;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 import org.usfirst.frc.team5507.grip.GripPipeline;
@@ -41,24 +43,20 @@ public class Robot extends TimedRobot {
 	public static final ExampleSubsystem kExampleSubsystem
 			= new ExampleSubsystem();
 	public static OI m_oi;
-	public Spark left = new Spark(0); // TEMPORARY PWM PORT NUMBERS FIX LATER.
-	public Spark right = new Spark(1); 
-	public Spark bomb = new Spark(2);
-	public DoubleSolenoid solenoid1 = new DoubleSolenoid(4,5);
-	public DoubleSolenoid solenoid2 = new DoubleSolenoid(0,1);
-		
-	DifferentialDrive m_drive = new DifferentialDrive(left, right);
+	
+		public static WheelDrive test = new WheelDrive( 0, 1);
+		public static SwerveDrive testDrive = new SwerveDrive(test);
 
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 	
-	private static final int IMG_WIDTH = 320;
-	private static final int IMG_HEIGHT = 240;
-	
-	private VisionThread visionThread;
-	private double centerX = 0.0;
-	
-	private final Object imgLock = new Object();
+//	private static final int IMG_WIDTH = 320;
+//	private static final int IMG_HEIGHT = 240;
+//	
+//	private VisionThread visionThread;
+//	private double centerX = 0.0;
+//	
+//	private final Object imgLock = new Object();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -66,22 +64,22 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-	    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-	    camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
-		m_oi = new OI();
-		m_chooser.addDefault("Default Auto", new ExampleCommand());
-		// chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", m_chooser);
-		visionThread = new VisionThread(camera, new GripPipeline(), pipeline ->
-		  {
-	       if (!pipeline.findContoursOutput().isEmpty()) {
-	            Rect r = Imgproc.boundingRect(pipeline.findContoursOutput().get(0));
-	            synchronized (imgLock) {
-	                centerX = r.x + (r.width / 2);
-	            }
-	        }
-	    }); 
-	    visionThread.start();
+//	    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+//	    camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
+//		m_oi = new OI();
+//		m_chooser.addDefault("Default Auto", new ExampleCommand());
+//		// chooser.addObject("My Auto", new MyAutoCommand());
+//		SmartDashboard.putData("Auto mode", m_chooser);
+//		visionThread = new VisionThread(camera, new GripPipeline(), pipeline ->
+//		  {
+//	       if (!pipeline.findContoursOutput().isEmpty()) {
+//	            Rect r = Imgproc.boundingRect(pipeline.findContoursOutput().get(0));
+//	            synchronized (imgLock) {
+//	                centerX = r.x + (r.width / 2);
+//	            }
+//	        }
+//	    }); 
+//	    visionThread.start();
 		
 		
 	}
@@ -136,12 +134,12 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		double centerX;
-	    synchronized (imgLock) {
-	        centerX = this.centerX;
-	    }
-	    double turn = centerX - (IMG_WIDTH / 2);
-	    m_drive.arcadeDrive(-0.5, (turn * 0.005));
+//		double centerX;
+//	    synchronized (imgLock) {
+//	        centerX = this.centerX;
+//	    }
+//	    double turn = centerX - (IMG_WIDTH / 2);
+//	    m_drive.arcadeDrive(-0.5, (turn * 0.005));
 		
 		
 	}
@@ -156,8 +154,7 @@ public class Robot extends TimedRobot {
 			m_autonomousCommand.cancel();
 			
 		}
-		solenoid1.set(Value.kReverse);
-		solenoid2.set(Value.kReverse);
+		
 	}
 
 	/**
@@ -167,30 +164,7 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		
-		/*if(OI.main.getRawAxis(2) > .1) { //turn left
-			m_drive.tankDrive(-OI.main.getRawAxis(2), OI.main.getRawAxis(2));
-		}
-		else if(OI.main.getRawAxis(3) > .1) { //turn right
-			m_drive.tankDrive(OI.main.getRawAxis(3), -OI.main.getRawAxis(3));
-		}
-		else {`
-			m_drive.tankDrive(-OI.main.getRawAxis(1), -OI.main.getRawAxis(1));
-		}*/
-		m_drive.arcadeDrive(-OI.main.getRawAxis(1), OI.main.getRawAxis(0));
-		if(OI.leftBumper.get()) { //Low Gear
-			solenoid1.set(Value.kReverse);
-			solenoid2.set(Value.kReverse);
-		}
-		if(OI.rightBumper.get()) { //High Gear
-			solenoid1.set(Value.kForward);
-			solenoid2.set(Value.kForward);
-		}
-		if(OI.a.get()) {
-			bomb.set(.7);
-		}
-		if(!(OI.a.get())) {
-			bomb.set(0);
-		}
+		test.drive(OI.main.getRawAxis(0), OI.main.getRawAxis(1));
 		
 	}
 	
